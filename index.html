@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Comparison Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+       .container {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    width: 90%;
+}
+
+textarea, .output {
+    width: 45%;
+    height: 400px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    background-color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    flex-grow: 1;
+}
+
+        .highlight {
+            background-color: #ffcccc;
+        }
+        .button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Comparison Tool</h1>
+    <div class="container">
+        <textarea id="file1" placeholder="Paste first file content here..."></textarea>
+        <div id="file2" class="output" contenteditable="true" placeholder="Paste second file content here..."></div>
+    </div>
+    <button class="button" onclick="compareFiles()">Compare</button>
+
+    <script>
+        function compareFiles() {
+            const file1 = document.getElementById('file1').value.split('\n');
+            const file2 = document.getElementById('file2').innerText.split('\n');
+            const file2Element = document.getElementById('file2');
+            let highlightedContent = '';
+
+            for (let i = 0; i < file2.length; i++) {
+                const words1 = file1[i] ? file1[i].split(' ') : [];
+                const words2 = file2[i] ? file2[i].split(' ') : [];
+                for (let j = 0; j < words2.length; j++) {
+                    if (words1[j] !== words2[j]) {
+                        highlightedContent += `<span class="highlight">${words2[j]}</span> `;
+                    } else {
+                        highlightedContent += `${words2[j]} `;
+                    }
+                }
+                highlightedContent += '\n';
+            }
+
+            file2Element.innerHTML = highlightedContent.trim();
+        }
+
+        function syncScroll(element1, element2) {
+            element1.onscroll = function() {
+                element2.scrollTop = element1.scrollTop;
+                element2.scrollLeft = element1.scrollLeft;
+            };
+            element2.onscroll = function() {
+                element1.scrollTop = element2.scrollTop;
+                element1.scrollLeft = element2.scrollLeft;
+            };
+        }
+
+        window.onload = function() {
+            const file1Element = document.getElementById('file1');
+            const file2Element = document.getElementById('file2');
+            syncScroll(file1Element, file2Element);
+        };
+    </script>
+</body>
+</html>
